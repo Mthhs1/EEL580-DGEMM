@@ -1,0 +1,37 @@
+Executando 5 testes de DGEMM com NumPy
+Tamanho da matriz: 1024 x 1024
+Tipo de dado: float64
+----------------------------------------
+Teste 1/5: gerando matrizes...
+Teste 1/5: iniciando multiplicacao...
+Resultado teste 1: wall = 0.516963 s | cpu = 0.516533 s
+----------------------------------------
+Teste 2/5: gerando matrizes...
+Teste 2/5: iniciando multiplicacao...
+Resultado teste 2: wall = 0.535487 s | cpu = 0.534953 s
+----------------------------------------
+Teste 3/5: gerando matrizes...
+Teste 3/5: iniciando multiplicacao...
+Resultado teste 3: wall = 0.485944 s | cpu = 0.485939 s
+----------------------------------------
+Teste 4/5: gerando matrizes...
+Teste 4/5: iniciando multiplicacao...
+Resultado teste 4: wall = 0.503286 s | cpu = 0.503084 s
+----------------------------------------
+Teste 5/5: gerando matrizes...
+Teste 5/5: iniciando multiplicacao...
+Resultado teste 5: wall = 0.495740 s | cpu = 0.495708 s
+----------------------------------------
+
+========== RESUMO FINAL ==========
+Tamanho da matriz: 1024 x 1024
+Numero de testes: 5
+Wall time medio: 0.507484 s
+Wall time minimo: 0.485944 s
+Wall time maximo: 0.535487 s
+Desvio padrao wall: 0.019323 s
+CPU time medio: 0.507243 s
+CPU time minimo: 0.485939 s
+CPU time maximo: 0.534953 s
+Desvio padrao cpu: 0.019094 s
+==================================

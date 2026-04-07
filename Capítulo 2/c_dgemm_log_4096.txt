@@ -1,0 +1,38 @@
+Executando 5 testes de DGEMM em C
+Tamanho da matriz: 4096 x 4096
+Representacao das matrizes: arrays unidimensionais
+Implementacao: C puro, sem otimizacoes explicitas no codigo
+----------------------------------------
+Teste 1/5: gerando matrizes...
+Teste 1/5: iniciando multiplicacao...
+Resultado teste 1: wall = 305.958229 s | cpu = 305.903234 s
+----------------------------------------
+Teste 2/5: gerando matrizes...
+Teste 2/5: iniciando multiplicacao...
+Resultado teste 2: wall = 305.739261 s | cpu = 305.698510 s
+----------------------------------------
+Teste 3/5: gerando matrizes...
+Teste 3/5: iniciando multiplicacao...
+Resultado teste 3: wall = 306.105848 s | cpu = 305.954801 s
+----------------------------------------
+Teste 4/5: gerando matrizes...
+Teste 4/5: iniciando multiplicacao...
+Resultado teste 4: wall = 305.952175 s | cpu = 305.915154 s
+----------------------------------------
+Teste 5/5: gerando matrizes...
+Teste 5/5: iniciando multiplicacao...
+Resultado teste 5: wall = 305.951295 s | cpu = 305.912541 s
+----------------------------------------
+
+========== RESUMO FINAL ==========
+Tamanho da matriz: 4096 x 4096
+Numero de testes: 5
+Wall time medio: 305.9413616 s
+Wall time minimo: 305.739261 s
+Wall time maximo: 306.105848 s
+Desvio padrao wall: 0.130767484053945 s
+CPU time medio: 305.876848 s
+CPU time minimo: 305.69851 s
+CPU time maximo: 305.954801 s
+Desvio padrao cpu: 0.101634975935935 s
+==================================

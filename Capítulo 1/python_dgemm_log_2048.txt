@@ -1,0 +1,37 @@
+Executando 5 testes de DGEMM em Python puro
+Tamanho da matriz: 2048 x 2048
+----------------------------------------
+Teste 1/5: gerando matrizes...
+Teste 1/5: iniciando multiplicacao...
+Resultado teste 1: wall = 684.369546 s | cpu = 684.272743 s
+----------------------------------------
+Teste 2/5: gerando matrizes...
+Teste 2/5: iniciando multiplicacao...
+Resultado teste 2: wall = 684.490578 s | cpu = 684.415847 s
+----------------------------------------
+Teste 3/5: gerando matrizes...
+Teste 3/5: iniciando multiplicacao...
+Resultado teste 3: wall = 684.375475 s | cpu = 684.324789 s
+----------------------------------------
+Teste 4/5: gerando matrizes...
+Teste 4/5: iniciando multiplicacao...
+Resultado teste 4: wall = 684.365787 s | cpu = 684.284478 s
+----------------------------------------
+Teste 5/5: gerando matrizes...
+Teste 5/5: iniciando multiplicacao...
+Resultado teste 5: wall = 684.359525 s | cpu = 684.274789 s
+----------------------------------------
+
+========== RESUMO FINAL ==========
+Tamanho da matriz: 2048 x 2048
+Numero de testes: 5
+Wall time medio: 684.3921822 s
+Wall time minimo: 684.359525 s
+Wall time maximo: 684.490578 s
+Desvio padrao wall: 0.055309 s
+CPU time medio: 684.3145292 s
+CPU time minimo: 684.272743 s
+CPU time maximo: 684.415847 s
+Desvio padrao cpu: 0.060413 s
+==================================
+
