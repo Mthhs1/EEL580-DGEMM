@@ -1,0 +1,38 @@
+Executando 5 testes de DGEMM em C (Otimizacao 2 - AVX com unrolling)
+Tamanho da matriz: 8192 x 8192
+Representacao das matrizes: arrays unidimensionais em ordem coluna-major
+Implementacao: intrinsics AVX com FMA e unrolling 4 no acumulador vetorial
+----------------------------------------
+Teste 1/5: gerando matrizes...
+Teste 1/5: iniciando multiplicacao...
+Resultado teste 1: wall = 215.379363 s | cpu = 215.347479 s
+----------------------------------------
+Teste 2/5: gerando matrizes...
+Teste 2/5: iniciando multiplicacao...
+Resultado teste 2: wall = 215.621669 s | cpu = 215.596130 s
+----------------------------------------
+Teste 3/5: gerando matrizes...
+Teste 3/5: iniciando multiplicacao...
+Resultado teste 3: wall = 215.039873 s | cpu = 214.999084 s
+----------------------------------------
+Teste 4/5: gerando matrizes...
+Teste 4/5: iniciando multiplicacao...
+Resultado teste 4: wall = 214.771367 s | cpu = 214.751800 s
+----------------------------------------
+Teste 5/5: gerando matrizes...
+Teste 5/5: iniciando multiplicacao...
+Resultado teste 5: wall = 215.470578 s | cpu = 215.446724 s
+----------------------------------------
+
+========== RESUMO FINAL ==========
+Tamanho da matriz: 8192 x 8192
+Numero de testes: 5
+Wall time medio: 215.256570 s
+Wall time minimo: 214.771367 s
+Wall time maximo: 215.621669 s
+Desvio padrao wall: 0.345164 s
+CPU time medio: 215.228243 s
+CPU time minimo: 214.751800 s
+CPU time maximo: 215.596130 s
+Desvio padrao cpu: 0.345255 s
+Arquivo de log: c_dgemm_avx_unroll_log_8192.txt
