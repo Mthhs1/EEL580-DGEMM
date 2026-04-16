@@ -1,0 +1,101 @@
+\documentclass[12pt]{article}
+
+\usepackage{sbc-template}
+\usepackage{graphicx,url}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{float}
+     
+\sloppy
+
+\title{Aquitetura de Computadores --- DGEMM}
+
+\author{Matheus da Silva Conceição --- DRE\: 125050534}
+
+\address{PESC --- Universidade Federal do Rio de Janeiro (UFRJ)
+  \email{matheuswnscf@poli.ufrj.br}
+}
+
+\begin{document} 
+
+\maketitle
+
+\section{Introdução}
+O objetivo deste trabalho é implementar algoritmos de multiplicação de matrizes 
+para demonstrar as ideias do livro \textit{Computer Organization and Design: RISCV} de Hennessy e Patterson.
+A cada capítulo do livro, um algoritmo de multiplicação de matrizes é implementado e cada um desses algoritmos
+possui uma otimização específica.
+
+\section{Algoritmo 1: Multiplicação de matrizes tradicional}
+\subsection{Python puro}
+O algoritmo tradicional de multiplicação de matrizes é o mais simples e direto, 
+onde cada elemento da matriz resultante é calculado como a soma dos produtos 
+dos elementos correspondentes das linhas da primeira matriz e das colunas da segunda matriz. 
+A implementação em Python puro pode ser feita utilizando três 
+loops aninhados para iterar sobre as linhas e colunas das matrizes.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/1.png} 
+    \caption{Implementação do algoritmo em Python.}\label{fig:fig1}
+\end{figure}
+
+Como é um dos mais simples, o algoritmo tradicional tem uma complexidade de tempo de O (n$^3$),
+ o que o torna ineficiente para matrizes grandes. Além disso, para esse algoritmo, em mais baixos níveis,
+ para executar cada multiplicação, o processador precisa acessar a memória para obter os valores das matrizes
+ inúmeras vezes. Outra questão também é o que os dados do Python puro (como o Float) contam com
+ objetos, isso somado a fato das listas serem estruturas de dados mais complexas (listas dentro de listas), torna o processo 
+ de multiplicação ainda mais lento.
+
+ \subsection{Numpy (biblioteca do Python)}
+ Já o algoritmo de multiplicação de matrizes utilizando a biblioteca Numpy (uma biblioteca com foco
+em computação numérica e álgebra linear) é muito mais rápido e eficiente.
+A biblioteca Numpy é otimizada para operações de matrizes e utiliza implementações em C (como listas contíguas),
+o que deixa a multiplicação de matrizes muito mais rápida do que a implementação em Python puro.
+
+\section{Algoritmo 2: Multiplicação de matrizes utilizando C}
+
+A implementação do algoritmo de multiplicação de matrizes utilizando a linguagem C é significativamente 
+mais rápida do que a implementação em Python puro. Primeiramente, diferentemente do Python puro, \textbf{em C os dados
+das matrizes são armazenados em arrays contíguos na memória}, ou seja, os dados na memória estão organizados de forma
+sequencial, o que permite um acesso mais eficiente à memória. Além disso, a linguagem C é compilada, 
+o que significa que o código é traduzido diretamente para código de máquina, eliminando a etapa de 
+interpretação presente no Python. Isso resulta em uma execução mais rápida, 
+especialmente para operações intensivas em cálculos, como a multiplicação de matrizes.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/2.png} 
+    \caption{Implementação do algoritmo em C.}\label{fig:fig2}
+\end{figure}
+
+\section{Algoritmo 3: otimização AVX}
+
+A otimização AVX (Advanced Vector Extensions) é uma extensão do conjunto de instruções x86 que
+permite a execução de operações vetoriais em paralelo, isso através de um conceito chamado SIMD 
+(Single Instruction, Multiple Data) ou ``subword parallelism'', definição que o livro texto utiliza.
+
+Em vez de processar um elemento de cada vez, a otimização AVX permite que o processador 
+execute a mesma operação em vários elementos simultaneamente, utilizando registradores vetoriais de 256 ou 512 
+bits.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/3.png} 
+    \caption{Implementação da otimização AVX.}\label{fig:fig3}
+\end{figure}
+
+Primeiramente, a declaração \texttt{\_m256d} é um tipo de dado específico para armazenar vetores de 256 bits, 
+que podem conter quatro números de ponto flutuante de precisão dupla (double). A função 
+\texttt{\_mm256\_loadu\_pd} é usada para carregar os dados consecutivos (por exemplo, 4 elementos de uma única linha ou 
+coluna) das matrizes A e B para os registradores vetoriais, permitindo que as operações sejam 
+realizadas em paralelo. A função \texttt{\_mm256\_mul\_pd} é utilizada para multiplicar 
+os elementos correspondentes dos vetores, e a função \texttt{\_mm256\_add\_pd} é usada para acumular 
+os resultados da multiplicação. Por fim, a função \texttt{\_mm256\_storeu\_pd} é utilizada para armazenar o 
+resultado final da multiplicação de matrizes de volta na matriz C.
+
+O bom desempenho da otimização AVX se deve à capacidade de processar múltiplos 
+elementos em paralelo, reduzindo o número de ciclos de clock necessários para 
+realizar a multiplicação de matrizes. 
+
+\end{document}

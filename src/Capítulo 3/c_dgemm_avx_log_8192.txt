@@ -1,0 +1,38 @@
+Executando 5 testes de DGEMM em C (Otimizacao 1 - AVX)
+Tamanho da matriz: 8192 x 8192
+Representacao das matrizes: arrays unidimensionais em ordem coluna-major
+Implementacao: intrinsics AVX (_mm256_loadu_pd, _mm256_broadcast_sd, _mm256_fmadd_pd)
+----------------------------------------
+Teste 1/5: gerando matrizes...
+Teste 1/5: iniciando multiplicacao...
+Resultado teste 1: wall = 848.848797 s | cpu = 848.834878 s
+----------------------------------------
+Teste 2/5: gerando matrizes...
+Teste 2/5: iniciando multiplicacao...
+Resultado teste 2: wall = 848.848421 s | cpu = 848.834877 s
+----------------------------------------
+Teste 3/5: gerando matrizes...
+Teste 3/5: iniciando multiplicacao...
+Resultado teste 3: wall = 846.874877 s | cpu = 845.851214 s
+----------------------------------------
+Teste 4/5: gerando matrizes...
+Teste 4/5: iniciando multiplicacao...
+Resultado teste 4: wall = 847.121567 s | cpu = 847.099114 s
+----------------------------------------
+Teste 5/5: gerando matrizes...
+Teste 5/5: iniciando multiplicacao...
+Resultado teste 5: wall = 848.915487 s | cpu = 848.894849 s
+----------------------------------------
+
+========== RESUMO FINAL ==========
+Tamanho da matriz: 8192 x 8192
+Numero de testes: 5
+Wall time medio: 848.190698 s
+Wall time minimo: 846.874877 s
+Wall time maximo: 848.915487 s
+Desvio padrao wall: 1.139535 s
+CPU time medio: 847.840323 s
+CPU time minimo: 845.851214 s
+CPU time maximo: 848.894849 s
+Desvio padrao cpu: 1.722619 s
+==================================
