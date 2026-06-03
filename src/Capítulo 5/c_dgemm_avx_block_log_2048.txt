@@ -1,0 +1,39 @@
+Executando 5 testes de DGEMM em C (Otimizacao 3 - AVX com unrolling e blocking)
+Tamanho da matriz: 2048 x 2048
+Representacao das matrizes: arrays unidimensionais em ordem coluna-major
+Implementacao: intrinsics AVX com FMA, unrolling 4 e blocos 32x32
+Alocacao: memoria alinhada em 32 bytes para loads/stores AVX alinhados
+----------------------------------------
+Teste 1/5: gerando matrizes...
+Teste 1/5: iniciando multiplicacao...
+Resultado teste 1: wall = 1.725293 s | cpu = 1.724527 s
+----------------------------------------
+Teste 2/5: gerando matrizes...
+Teste 2/5: iniciando multiplicacao...
+Resultado teste 2: wall = 1.715503 s | cpu = 1.714035 s
+----------------------------------------
+Teste 3/5: gerando matrizes...
+Teste 3/5: iniciando multiplicacao...
+Resultado teste 3: wall = 1.729993 s | cpu = 1.728696 s
+----------------------------------------
+Teste 4/5: gerando matrizes...
+Teste 4/5: iniciando multiplicacao...
+Resultado teste 4: wall = 1.713460 s | cpu = 1.712643 s
+----------------------------------------
+Teste 5/5: gerando matrizes...
+Teste 5/5: iniciando multiplicacao...
+Resultado teste 5: wall = 1.713238 s | cpu = 1.712397 s
+----------------------------------------
+
+========== RESUMO FINAL ==========
+Tamanho da matriz: 2048 x 2048
+Numero de testes: 5
+Wall time medio: 1.719497 s
+Wall time minimo: 1.713238 s
+Wall time maximo: 1.729993 s
+Desvio padrao wall: 0.007670 s
+CPU time medio: 1.718460 s
+CPU time minimo: 1.712397 s
+CPU time maximo: 1.728696 s
+Desvio padrao cpu: 0.007612 s
+Arquivo de log: c_dgemm_avx_block_log_2048.txt

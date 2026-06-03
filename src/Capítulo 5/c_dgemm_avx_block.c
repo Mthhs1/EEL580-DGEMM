@@ -1,4 +1,4 @@
-#define _POSIX_C_SOURCE 199309L
+#define _POSIX_C_SOURCE 200112L
 
 #include <errno.h>
 #include <immintrin.h>
@@ -13,6 +13,8 @@
 #define NUM_TESTS 5
 #define UNROLL 4
 #define AVX_WIDTH 4
+#define BLOCKSIZE 32
+#define ALIGNMENT 32
 
 static double get_wall_time_seconds(void)
 {
@@ -69,6 +71,11 @@ static double calculate_stddev(const double *values, int count, double mean)
     return sqrt(sum / (count - 1));
 }
 
+static bool allocate_aligned_matrix(size_t n, double **matrix)
+{
+    return posix_memalign((void **)matrix, ALIGNMENT, n * n * sizeof(double)) == 0;
+}
+
 static void create_random_matrix(size_t n, double *matrix)
 {
     size_t total = n * n;
@@ -89,33 +96,47 @@ static void initialize_matrix_with_zeros(size_t n, double *matrix)
     }
 }
 
-static void dgemm_c_avx_unroll(size_t n, const double *A, const double *B, double *C)
+static void do_block(size_t n, size_t si, size_t sj, size_t sk, const double *A, const double *B, double *C)
 {
-    for (size_t i = 0; i < n; i += UNROLL * AVX_WIDTH)
+    for (size_t i = si; i < si + BLOCKSIZE; i += UNROLL * AVX_WIDTH)
     {
-        for (size_t j = 0; j < n; j++)
+        for (size_t j = sj; j < sj + BLOCKSIZE; j++)
         {
             __m256d c[UNROLL];
 
             for (int r = 0; r < UNROLL; r++)
             {
-                c[r] = _mm256_loadu_pd(&C[i + r * AVX_WIDTH + j * n]);
+                c[r] = _mm256_load_pd(&C[i + r * AVX_WIDTH + j * n]);
             }
 
-            for (size_t k = 0; k < n; k++)
+            for (size_t k = sk; k < sk + BLOCKSIZE; k++)
             {
                 __m256d b0 = _mm256_broadcast_sd(&B[k + j * n]);
 
                 for (int r = 0; r < UNROLL; r++)
                 {
-                    __m256d a0 = _mm256_loadu_pd(&A[i + r * AVX_WIDTH + k * n]);
+                    __m256d a0 = _mm256_load_pd(&A[i + r * AVX_WIDTH + k * n]);
                     c[r] = _mm256_fmadd_pd(a0, b0, c[r]);
                 }
             }
 
             for (int r = 0; r < UNROLL; r++)
             {
-                _mm256_storeu_pd(&C[i + r * AVX_WIDTH + j * n], c[r]);
+                _mm256_store_pd(&C[i + r * AVX_WIDTH + j * n], c[r]);
+            }
+        }
+    }
+}
+
+static void dgemm_c_avx_block(size_t n, const double *A, const double *B, double *C)
+{
+    for (size_t sj = 0; sj < n; sj += BLOCKSIZE)
+    {
+        for (size_t si = 0; si < n; si += BLOCKSIZE)
+        {
+            for (size_t sk = 0; sk < n; sk += BLOCKSIZE)
+            {
+                do_block(n, si, sj, sk, A, B, C);
             }
         }
     }
@@ -123,11 +144,11 @@ static void dgemm_c_avx_unroll(size_t n, const double *A, const double *B, doubl
 
 static bool run_single_test(size_t n, double *wall_time, double *cpu_time)
 {
-    double *A = (double *)malloc(n * n * sizeof(double));
-    double *B = (double *)malloc(n * n * sizeof(double));
-    double *C = (double *)malloc(n * n * sizeof(double));
+    double *A = NULL;
+    double *B = NULL;
+    double *C = NULL;
 
-    if (A == NULL || B == NULL || C == NULL)
+    if (!allocate_aligned_matrix(n, &A) || !allocate_aligned_matrix(n, &B) || !allocate_aligned_matrix(n, &C))
     {
         free(A);
         free(B);
@@ -142,7 +163,7 @@ static bool run_single_test(size_t n, double *wall_time, double *cpu_time)
     double start_wall = get_wall_time_seconds();
     clock_t start_cpu = clock();
 
-    dgemm_c_avx_unroll(n, A, B, C);
+    dgemm_c_avx_block(n, A, B, C);
 
     clock_t end_cpu = clock();
     double end_wall = get_wall_time_seconds();
@@ -161,7 +182,7 @@ int main(int argc, char *argv[])
 {
     if (argc < 2)
     {
-        printf("Uso: ./c_dgemm_avx_unroll <tamanho_da_matriz>\n");
+        printf("Uso: ./c_dgemm_avx_block <tamanho_da_matriz>\n");
         return 1;
     }
 
@@ -178,9 +199,9 @@ int main(int argc, char *argv[])
 
     size_t n = (size_t)parsed_n;
 
-    if (n % (UNROLL * AVX_WIDTH) != 0)
+    if (n % BLOCKSIZE != 0)
     {
-        printf("Para manter a estrutura do capitulo 4, informe um tamanho multiplo de %d.\n", UNROLL * AVX_WIDTH);
+        printf("Para manter a estrutura do capitulo 5, informe um tamanho multiplo de %d.\n", BLOCKSIZE);
         return 1;
     }
 
@@ -188,7 +209,7 @@ int main(int argc, char *argv[])
     double cpu_times[NUM_TESTS];
     char log_path[128];
 
-    snprintf(log_path, sizeof(log_path), "c_dgemm_avx_unroll_log_%zu.txt", n);
+    snprintf(log_path, sizeof(log_path), "c_dgemm_avx_block_log_%zu.txt", n);
 
     FILE *log_file = fopen(log_path, "w");
 
@@ -200,10 +221,11 @@ int main(int argc, char *argv[])
 
     srand((unsigned int)time(NULL));
 
-    log_message(log_file, "Executando %d testes de DGEMM em C (Otimizacao 2 - AVX com unrolling)", NUM_TESTS);
+    log_message(log_file, "Executando %d testes de DGEMM em C (Otimizacao 3 - AVX com unrolling e blocking)", NUM_TESTS);
     log_message(log_file, "Tamanho da matriz: %zu x %zu", n, n);
     log_message(log_file, "Representacao das matrizes: arrays unidimensionais em ordem coluna-major");
-    log_message(log_file, "Implementacao: intrinsics AVX com FMA e unrolling %d no acumulador vetorial", UNROLL);
+    log_message(log_file, "Implementacao: intrinsics AVX com FMA, unrolling %d e blocos %dx%d", UNROLL, BLOCKSIZE, BLOCKSIZE);
+    log_message(log_file, "Alocacao: memoria alinhada em %d bytes para loads/stores AVX alinhados", ALIGNMENT);
     log_message(log_file, "----------------------------------------");
 
     for (int test_index = 0; test_index < NUM_TESTS; test_index++)
@@ -278,9 +300,9 @@ int main(int argc, char *argv[])
 }
 
 /*
-Compilação: 
-gcc -O3 -mavx -mfma -Wall -Wextra -o c_dgemm_avx_unroll 'src/Capítulo 4/c_dgemm_avx_unroll.c' -lm
+Compilacao:
+gcc -O3 -mavx -mfma -Wall -Wextra -o c_dgemm_avx_block 'src/Capítulo 5/c_dgemm_avx_block.c' -lm
 
-Execução:
-./c_dgemm_avx_unroll 512
+Execucao:
+./c_dgemm_avx_block 512
 */
